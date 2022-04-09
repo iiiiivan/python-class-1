@@ -3,8 +3,8 @@ from pycat.core import Window, Sprite, Color
 from typing import List
 from random import randint
 
-R=7
-C=5
+R=10
+C=15
 CELL_SIZE=100
 X0=Y0=CELL_SIZE/2
 
