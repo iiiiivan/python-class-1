@@ -1,5 +1,3 @@
-import turtle
-from matplotlib.pyplot import cla
 from pycat.core import Window, Sprite
 
 w=Window()
