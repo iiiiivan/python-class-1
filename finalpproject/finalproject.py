@@ -2,16 +2,39 @@ from typing import List
 from pycat.core import Window, Sprite, Scheduler, KeyCode
 from random import randint
 
-w = Window(background_image='background.png',
-            width=900,
-            height=504,
-            enforce_window_limits=False)
+w = Window(width=900, height=504, enforce_window_limits=False) 
 
 PIPE_GAP=0.4*w.height
 GRAVITY=-0.2
 PIPE_SPEED=5
 FLAP_SPEED=4
 
+class Background(Sprite):
+    def on_create(self):
+        self.image='background.png'
+        self.y=w.height/2
+        self.x=w.width/2
+        self.x_speed=1
+        self.layer = -1
+    
+    def on_update(self, dt):
+        self.x-=1
+        if self.x <= -w.width/2:
+            self.x+=w.width*2
+
+class Enemy(Sprite):
+    def on_create(self):
+        self.image='bee.png'
+        self.x=w.width/2
+        self.y=w.height/2
+        self.scale=0.3
+
+    def on_update(self, dt):
+        pass
+        
+w.create_sprite(Enemy)
+w.create_sprite(Background, x=0)
+w.create_sprite(Background, x=w.width)
 
 class Pipe(Sprite):
     def on_create(self):
@@ -60,10 +83,12 @@ class Bird(Sprite):
             self.y_speed=4 
 
         if self.is_touching_any_sprite_with_tag('pipe'):
-            w.close()
+            # w.close()
+            pass
         
         if self.y<0:
-            w.close()
+            # w.close()
+            pass
 
 class Bomb(Sprite):
     def on_create(self):

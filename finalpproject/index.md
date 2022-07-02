@@ -83,13 +83,13 @@ What are our labels?
 
 Day 1:
 
-    - Scrolling Background
-    - Enemy
-    - Shoot at the bird
-
+    [x] Scrolling Background
+    [x] Enemy
+    
 Day 2:
-
-    - Make the game easier at start and get progressively harder
+    [ ] How does Enemy move
+    [ ] Enemy shoot at the bird
+    [ ] Make the game easier at start and get progressively harder
 
    
 
