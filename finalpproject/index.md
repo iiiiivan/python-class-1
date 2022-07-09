@@ -82,15 +82,27 @@ What are our labels?
 ## Plan
 
 Day 1:
-
     [x] Scrolling Background
     [x] Enemy
     
 Day 2:
-    [ ] How does Enemy move
-    [ ] Enemy shoot at the bird
-    [ ] Make the game easier at start and get progressively harder
+    [x] Make the enemy move up and down
+    [x] Enemy shoot at the bird
+    [x] Give the Player 10 lives
+    [x] Add a Label for the PlayerLife
+    [x] Subtract a life each time a EnemyBullet touches the player
+    [x] Make the game easier at start and get progressively harder
+    [x] Time
+    [x] Reading highscore from a file
+    
 
+Day 3:
+    [ ] Add some background for the text labels
+    [ ] Highscore
+    
+    [ ] Start Screen
+    [ ] Game Over Screen
+    [ ] Give the bird some weapons
    
 
 
