@@ -97,9 +97,8 @@ Day 2:
     
 
 Day 3:
-    [ ] Add some background for the text labels
-    [ ] Highscore
-    
+    [x] Add some background for the text labels
+    [x] Highscore
     [ ] Start Screen
     [ ] Game Over Screen
     [ ] Give the bird some weapons

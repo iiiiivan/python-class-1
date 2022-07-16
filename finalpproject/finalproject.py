@@ -75,17 +75,14 @@ class EnemyBullet(Sprite):
                 w.close()
 
 
-class LabelBackground(Sprite):
+class PlayerLife(Label):
     def on_create(self):
-        self.width = 250
-        self.height = 150
-        self.color = Color.BLACK
-        self.x = self.width/2
-        self.y = w.height - self.height/2
-        self.layer = 0
+        self.font_size=15
+        self.life=3
+        self.layer=2
 
-
-w.create_sprite(LabelBackground)
+    def on_update(self, dt: float):
+        self.text="PlayerLives: "+str(self.life)
 
 
 class Time(Label):
@@ -93,6 +90,7 @@ class Time(Label):
         self.time = 0
         self.font_size = 15
         self.y = 40
+        self.layer=2
 
     def on_update(self, dt):
         self.time += dt
@@ -101,6 +99,7 @@ class Time(Label):
 
 class HighScore(Label):
     def on_create(self):
+        self.font_size = 15
         # read from file the last high score
         self.score = 0
         with open("finalpproject/highscore.txt", "r") as f:
@@ -108,14 +107,34 @@ class HighScore(Label):
 
         self.text = 'High Score: ' + str(self.score)
         self.y = 100
+        self.layer=2
 
     def on_update(self, dt):
         pass
         # check if the current time is more then the last high score
-        # if time > self.score:
+        if gui.time.time > self.score:
+            with open("finalpproject/highscore.txt", "w") as f:
+                f.write(str(round(gui.time.time,1)))
         #    write time to file
-w.create_label(HighScore)
-w.create_label(Time )
+
+
+class LabelBackground(Sprite):
+    def on_create(self):
+        
+        self.height = 150
+        self.color = Color.BLACK
+        
+        self.y = w.height - self.height/2
+        self.layer = 1
+        self.opacity=125
+        self.high=w.create_label(HighScore, y=450)
+        self.time=w.create_label(Time, y=400)
+        self.width = self.high.content_width 
+        self.x = self.width/2
+
+
+gui=w.create_sprite(LabelBackground)
+
 enemy = w.create_sprite(Enemy)
 w.create_sprite(Background, x=0)
 w.create_sprite(Background, x=w.width)
@@ -136,13 +155,7 @@ class Pipe(Sprite):
 
 
 
-class PlayerLife(Label):
-    def on_create(self):
-        self.font_size=15
-        self.life=3
 
-    def on_update(self, dt: float):
-        self.text="PlayerLives: "+str(self.life)
 
 player_life=w.create_label(PlayerLife)
 class Bird(Sprite):
