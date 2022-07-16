@@ -99,9 +99,12 @@ Day 2:
 Day 3:
     [x] Add some background for the text labels
     [x] Highscore
-    [ ] Start Screen
-    [ ] Game Over Screen
-    [ ] Give the bird some weapons
+    [x] Start Screen
+    [x] Game Over Screen
+    [x] Give the bird some weapons
+
+Day 4:
+    [ ] Make the bee come out after some time
    
 
 
