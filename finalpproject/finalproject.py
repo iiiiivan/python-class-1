@@ -1,8 +1,11 @@
+from turtle import position
 from typing import List
 from matplotlib.pyplot import text
 from pycat.core import Window, Sprite, Scheduler, KeyCode, Label, Color
 from random import randint
 from enum import Enum, auto
+
+from tables import Col
 
 w = Window(width=900, height=504, enforce_window_limits=False) 
 
@@ -34,7 +37,7 @@ class Enemy(Sprite):
     
     def on_create(self):
         self.image='bee.png'
-        self.x=w.width/2
+        self.x=0.8*w.width
         self.y=w.height/2
         self.scale=0.3
         self.speed=3
@@ -43,6 +46,7 @@ class Enemy(Sprite):
         self.time = 0
 
     def on_update(self, dt):
+        
         if self.state is Enemy.State.MOVE_UP:
             self.y += self.speed
             if self.is_touching_window_edge():
@@ -56,6 +60,11 @@ class Enemy(Sprite):
         if self.time > 1:
             self.time = 0
             w.create_sprite(EnemyBullet)
+        
+        if self.is_touching_any_sprite_with_tag("weapon"):
+            global enemy
+            self.delete()
+            enemy=None
                 
                 
 class EnemyBullet(Sprite):
@@ -66,7 +75,7 @@ class EnemyBullet(Sprite):
         self.color=(255 ,0 ,0)
 
     def on_update(self, dt):
-        self.x-=5
+        self.x-=7
         if self.is_touching_window_edge():
             self.delete()
         if self.is_touching_sprite(player):
@@ -78,9 +87,11 @@ class EnemyBullet(Sprite):
 
 class PlayerLife(Label):
     def on_create(self):
-        self.font_size=15
+        self.font_size=20
         self.life=3
         self.layer=2
+        self.font = "Blackadder ITC"
+        self.color=Color(51, 204, 51)
 
     def on_update(self, dt: float):
         self.text="PlayerLives: "+str(self.life)
@@ -89,26 +100,41 @@ class PlayerLife(Label):
 class Time(Label):
     def on_create(self):
         self.time = 0
-        self.font_size = 15
+        self.font_size = 20
         self.y = 40
         self.layer=2
+        self.font = "Blackadder ITC"
 
     def on_update(self, dt):
         self.time += dt
         self.text = 'Time: ' + str(round(self.time, 1))
 
-
-class HighScore(Label):
+class HighScoreStart(Label):
     def on_create(self):
-        self.font_size = 15
+        self.font_size = 30
+        self.font = "Blackadder ITC"
         # read from file the last high score
         self.score = 0
         with open("finalpproject/highscore.txt", "r") as f:
             self.score = float(f.readline())
 
         self.text = 'High Score: ' + str(self.score)
+        self.y = w.height/2
+        self.x=w.center.x-self.content_width/2
+        self.layer=2
+        self.color=Color.RED
+
+class HighScore(Label):
+    def on_create(self):
+        self.font_size = 20
+        self.font = "Blackadder ITC"
+        self.score = 0
+        with open("finalpproject/highscore.txt", "r") as f:
+            self.score = float(f.readline())
+        self.text = 'High Score: ' + str(self.score)
         self.y = 100
         self.layer=2
+        self.color=Color.RED
 
     def on_update(self, dt):
         pass
@@ -158,6 +184,7 @@ class Bird(Sprite):
     
     def on_left_click_anywhere(self):
         if self.has_weapon:
+            self.has_weapon=False
             w.create_sprite(Weapon)
 
     def on_update(self, dt):
@@ -167,16 +194,9 @@ class Bird(Sprite):
         if w.is_key_down(KeyCode.SPACE):
             self.y_speed=4 
 
-        if self.is_touching_any_sprite_with_tag('pipe'):
-            w.delete_all_sprites()
-            w.delete_all_labels()
-            w.create_label(GameOver)
-            global is_play
-            is_play=False
-        
-        if self.y<0:
-            # w.close()
-            pass
+        if self.is_touching_any_sprite_with_tag('pipe') or self.y<0:
+            endgame()
+               
 
 
 class WeaponIcon(Sprite):
@@ -190,8 +210,11 @@ class WeaponIcon(Sprite):
             self.delete()
 
     def on_left_click(self):
+        global enemy
         self.delete()
         player.has_weapon=True
+        if enemy is None :
+            enemy = w.create_sprite(Enemy)
 
 
 class Weapon(Sprite):
@@ -199,12 +222,28 @@ class Weapon(Sprite):
         self.position=player.position
         self.image='bomb.png'
         self.scale=0.1
+        self.x_speed=8
+        self.y_speed=8
+        self.layer=10
+        self.hb=w.create_sprite(HitBox, position=self.position)
+        
 
     def on_update(self, dt):
-        self.x+=1
-        if self.is_touching_window_edge():
+        self.x+=self.x_speed
+        self.y+=self.y_speed
+        self.y_speed-=0.2
+        self.hb.position=self.position
+        if self.x>w.width or self.y<0:
             self.delete()
+            self.hb.delete()
 
+
+class HitBox(Sprite):
+    
+    def on_create(self):
+        self.opacity=255
+        self.scale=2
+        self.add_tag("weapon")
         
 
 class GameOver(Label):
@@ -234,7 +273,7 @@ def create_pipe(dt):
         p2.y=gap_y + PIPE_GAP/2 + p2.height/2
         p2.rotation=180
 
-        if player and  not player.has_weapon and randint(1, 100)<100:
+        if player and  not player.has_weapon and randint(1, 100)<=100:
 
             #add a weapon for bird
             b=w.create_sprite(WeaponIcon)
@@ -256,13 +295,17 @@ player_life=None
 player=None
 
 def start_game():
-    global gui, enemy, player_life, player
+    global gui, player_life, player
     gui=w.create_sprite(LabelBackground)
-    enemy = w.create_sprite(Enemy)
-    
     player_life=w.create_label(PlayerLife)
     player=w.create_sprite(Bird)
     
+def endgame():
+    w.delete_all_sprites()
+    w.delete_all_labels()
+    w.create_label(GameOver)
+    global is_play
+    is_play=False
 
 class StartButton(Sprite):
     def on_create(self):
@@ -271,11 +314,13 @@ class StartButton(Sprite):
         self.x=450
         self.y=50
         self.layer=5
+        self.score = w.create_label(HighScoreStart)
 
     def  on_update(self, dt):
         pass
     def on_left_click(self):
         self.delete()
+        self.score.delete()
         start_game()
 
 
@@ -283,5 +328,6 @@ class StartButton(Sprite):
 w.create_sprite(Background, x=0)
 w.create_sprite(Background, x=w.width)
 w.create_sprite(StartButton)
+
 create_pipe(0)
 w.run() 

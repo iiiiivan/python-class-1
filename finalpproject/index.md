@@ -104,7 +104,40 @@ Day 3:
     [x] Give the bird some weapons
 
 Day 4:
-    [ ] Make the bee come out after some time
+    [x] Make the bee come out after player gets bomb
+    [x] Limit the player to shoot one bomb at a time
+    [x] Make the bomb kill the bee
+    [x] Make the bomb move in a parabola
+    [x] Added High Score to Start Screen
+    [x] Added some nice fonts and font color
+    [x] Fine tuned the bomb throw and gravity speed
+
+
+Presentation
+
+1. Introduction (1 minute)
+
+Describe the game in words.
+Flappy Bird.
+We made a simple version in the first class of this semester.
+I added a lot of new features to the game for my final project.
+(Give some examples of the featurs you added)
+Highscore (reading and writing text from a file)
+
+2. Demo (1 minute)
+Play your game and describe how it works
+
+3. Discussion (1 minute)
+What was the hardest part.
+Show some code and discuss it.
+
+We clap for you. You did a great job!!!!
+
+4. Q and A (1 minute)
+Teacher asks
+What was your favorite part?
+What else would you add if you had more time?
+Would you change anything?
    
 
 
